@@ -1,15 +1,14 @@
 \name{MEMS}
 \alias{MEMS}
-
+%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function to estimate the micro effect on macro structure (MEMS).}
 \description{
 \code{MEMS} implements parametric and nonparametric estimation routines to estimate the
 micro effect on macro structure when using a generative network model (i.e., a model
-where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{m}, which is assumed to be a predictor in the micro model of the form \eqn{f(A|m,Z)=\theta m + \gamma ^TZ}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. For a single macro statistic, the MEMS when \eqn{m} is increased from 0 to 1 is given by \eqn{MEMS=M_{m=1|Z}-M_{m=0|Z}}, where \eqn{M} is the macro statistic of interest. For a vector of macro statistics, the \emph{average} MEMS (aMEMS)is given by \deqn{aMEMS=\sum \frac{M_{m=1|Z}-M_{m=0|Z}}{n}}, for \eqn{n} observations. The interval can be defined flexibly to accomodate different values or more than 2 values. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
+where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{m}, which is assumed to be a predictor in the micro model of the form \eqn{f(A|m,Z)=\theta m + \gamma ^TZ}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. The MEMS when \eqn{\theta} changes from 0 to 1 is given by \deqn{MEMS=\sum_i \frac{M(\theta, m, \gamma, Z)_i-M(\gamma, Z)_i}{n}}, for \eqn{n} observations. Tuning parameters can be assigned to toggle the strength of \eqn{\theta} in model-implied estimates of \eqn{MEMS}. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
 
 }
-
 \usage{
 MEMS(model,
       micro_process,
@@ -34,7 +33,7 @@ MEMS(model,
       controls=NULL,
       control_functions=NULL)}
 
-
+%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{the micro-model to be analyzed. Currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects. To implement pooled estimation, \code{model} should be provided as a list of \code{ergm} or \code{sienaFit} objects.
 }
@@ -42,7 +41,7 @@ MEMS(model,
 \item{macro_function}{a \code{function} that calculates the macro statistic of interest. Currently accepts user defined functions as well as functions inherent in the \code{\link[igraph]{igraph}} and \code{statnet} packages for \R.}
 \item{object_type}{A character string that tells netmediate the type of object to apply the
 \code{macro_function} to. Currently accepts \code{\link[igraph]{igraph}} and \code{\link[network]{network}} objects. If left \code{NULL}, \code{\link[network]{network}} objects are assumed. Can be over-ridden to use other object types with a user-function by defining a function that accepts either a \code{\link[network]{network}} or \code{\link[igraph]{igraph}} object and returns a numeric value or vector of numeric values (see examples).}
-\item{interval}{The interval over which to vary \code{micro_process}. Should be provided as a vector of numeric values with 2 or more entries.}
+\item{interval}{The value of tuning parameters to assign to \eqn{\theta}. Should be provided as a vector of numeric values with 2 entries.}
 \item{nsim}{The number of simulations or bootstrap samples to use during estimation.}
 \item{algorithm}{The estimation algorithm to be used. Currently accepts \code{"parametric"} and \code{"nonparametric"}. If \code{"parametric"}, estimation is obtained with Monte Carlo sampling. If \code{"nonparametric"}, estimation uses bootstrap resampling.}
 \item{silent}{logical parameter. Whether to provide updates on the progress of the simulation or not.}
@@ -61,12 +60,8 @@ MEMS(model,
 \item{controls}{a vector of character strings listing the controls to be calculated when using \code{\link{AMME}}. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 \item{control_functions}{a list of functions to calculate the macro control variables provided in controls. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 
+%-end arguments statement
 }
-
-
-
-
-
 \details{
 Estimates the MEMS over the provided intervals. If the macro statistic is calculated on the node or subgraph levels or on multiple network observations, the aMEMS is provided instead. Standard errors and confidence intervals are based on the sampling distribution of simulated values, which are calculated either parametrically or nonparametrically according to \code{algorithm}. Parametric estimation is typically faster, but cannot be used for nonparametric network models (e.g., quadratic assignment procedure).
 
@@ -84,12 +79,12 @@ When estimating a relational event model with a \code{\link[relevent]{rem.dyad}}
 If \code{full_output=FALSE}, then a table is returned with the MEMS, its standard error, confidence interval, and p-value.
 
 If \code{full_output=TRUE}, then a list is returned with the following three elements.
-\item{summary_dat}{is the table of summary output ucontaining the MEMS, its standard error, confidence interval, and p-value.}
-\item{output_data}{is a matrix where each row is a simulated draw of the MEMS or aMEMS (or a simulation draw for a specific network in the case of temporal data or pooled estimation) and each column corresponds to a unique value provided in the interval argument.}
-\item{mems_samples}{is vector matrix corresponding where each row is a simulated draw of the MEMS or aMEMS (or a simulation draw for a specific network in the case of temporal data or pooled estimation) and each column represents the differences in MEMS/aMEMS when subtracting the value of a macro statistic at one interval level from the next highest interval level.}
+\item{summary_dat}{is the table of summary output containing the MEMS, its standard error, confidence interval, and p-value.}
+\item{output_data}{is a matrix where each row is a simulated draw of the MEMS (or a simulation draw for a specific network in the case of temporal data or pooled estimation) and each column corresponds to a unique value provided in the interval argument.}
+\item{mems_samples}{is vector matrix corresponding where each row is a simulated draw of the MEM (or a simulation draw for a specific network in the case of temporal data or pooled estimation) and each column represents the differences in MEMS/aMEMS when subtracting the value of a macro statistic at one interval level from the next highest interval level.}
 }
 \references{
-Duxbury, Scott W. "A General Framework for Micro-macro Analysis in Social Networks Research." Working paper.
+Duxbury, Scott W. "Micro Effects on Macro Structure in Social Networks." Working paper.
 
 }
 \author{
@@ -127,7 +122,8 @@ a<-ergm(a1~edges+nodeifactor("var.1")+nodeofactor("var.1"))
 MEMS(a,
       micro_process="nodeifactor.var.1.1",
       macro_function=gtrans,
-      nsim=50)
+      nsim=20,
+      silent=TRUE)
 
 }
 
@@ -176,15 +172,6 @@ MEMS(model1,
      algorithm = "nonparametric")
 
 
-###Expand the interval to consider multiple possible change statistics
-MEMS(model1,
-     micro_process="absdiff.Grade",
-     macro_function = function(x){gtrans(x,measure="strongcensus")},
-     object_type = "network",
-     nsim=100,
-     interval=c(0,1,2,3),
-     silent=FALSE,
-     algorithm = "parametric")
 
 
 ####calculate the MEMS using igraph
@@ -193,7 +180,7 @@ MEMS(model1,
      macro_function = function(x){igraph::transitivity(x,type="local")},
      object_type = "igraph",
      nsim=100,
-     interval=c(0,1,2,3),
+     interval=c(0,1),
      silent=FALSE,
      algorithm = "parametric")
 
@@ -210,7 +197,7 @@ MEMS(model1,
      macro_function = community_counts,
      object_type = "igraph",
      nsim=100,
-     interval=c(0,1,2,3),
+     interval=c(0,1),
      silent=FALSE,
      algorithm = "parametric")
 
@@ -227,7 +214,7 @@ MEMS(model1,
      macro_function = assortativity_grade,
      object_type = "igraph",
      nsim=100,
-     interval=c(0,1,2,3),
+     interval=c(0,1),
      silent=FALSE,
      algorithm = "parametric")
 
@@ -588,14 +575,23 @@ MEMS(nl,
      algorithm = "nonparametric")
 
 
-}
-
-}
 
 
 
 
-\keyword{ ~mediation }
-\keyword{ ~networks }
-\keyword{ ~macro }
-\keyword{ ~micro }
+
+
+
+
+
+
+
+}%close don't test
+
+}%close examples
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ ~mediation }% use one of  RShowDoc("KEYWORDS")
+\keyword{ ~networks }% __ONLY ONE__ keyword per line
+\keyword{ ~macro }% __ONLY ONE__ keyword per line
+\keyword{ ~micro }% __ONLY ONE__ keyword per line

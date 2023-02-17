@@ -70,7 +70,7 @@ MEMS_ergm_nonparam <- function(model,
       bs_model<-glm(bs_mat$tie ~  1+., data = data.frame(bs_mat[,!colnames(bs_mat)%in%c("tie")]),family=binomial)
 
     }
-    theta[j,]<-btergm::coef(bs_model)
+    theta[j,]<-coef(bs_model)
 
     if(silent==FALSE){
 
@@ -84,7 +84,6 @@ MEMS_ergm_nonparam <- function(model,
   mat_list<-list()
   for(i in 1:length(interval)){
     mat_list[[i]]<-ergm_mat
-    mat_list[[i]][,micro_process]<-interval[i]
 
   }
 
@@ -134,6 +133,7 @@ MEMS_ergm_nonparam <- function(model,
       }
       pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
       cbcoef<-theta[j,]
+      cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
 
       #predict ties
       lp <- as.matrix(pred_mat)%*%cbcoef
@@ -166,7 +166,7 @@ MEMS_ergm_nonparam <- function(model,
         }
 
       }else{
-        el<-pred_mat[,c("i","j","y")]
+        el<-pred_mat[,c("i.name","j.name","y")]
         el<-el[el$y==1,-c(3)]
         el<-as.matrix(el)
         net_list[[i]]<-model$network

@@ -128,7 +128,7 @@ MEMS_rem_param <- function(model=model,
       for(i in 1:length(interval)){
 
         theta2<-theta[j,]
-        theta2[micro_process]<-theta2[micro_process]*interval[i] #currently taking this as an approximation to reduce run times. Works well in isolate examples.
+        theta2[micro_process]<-theta2[micro_process]*interval[i]
         if(is.null(covar_list)){ #include covariates if provided
           sim_sequence<-simulate(model,coef=theta2)
         }else{

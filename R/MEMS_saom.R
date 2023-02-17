@@ -109,7 +109,7 @@ MEMS_saom <- function(model,
 
     #create manipulated parameter--this is equivalent to setting the variable at a specific value
     theta2<-theta
-    theta2[,theta_index]<-theta2[,theta_index]*interval[i] #currently taking this as an approximation to reduce run times. Works well in isolate examples.
+    theta2[,theta_index]<-theta2[,theta_index]*interval[i]
     sim.model<-RSiena::sienaAlgorithmCreate(cond = FALSE,
                                   useStdInits = FALSE, nsub = 0 ,
                                   simOnly = TRUE,

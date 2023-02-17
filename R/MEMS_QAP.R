@@ -65,7 +65,6 @@ MEMS_QAP <- function(model,
   mat_list<-list()
   for(i in 1:length(interval)){
     mat_list[[i]]<-vector_data
-    mat_list[[i]][,micro_process]<-interval[i]
 
   }
 
@@ -109,6 +108,7 @@ MEMS_QAP <- function(model,
 
       pred_mat<-mat_list[[i]]
       cbcoef<-theta[j,]
+      cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
 
       #predict ties
       lp <- apply(pred_mat, 1, function(x) t(x) %*% cbcoef)

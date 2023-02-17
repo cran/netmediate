@@ -46,7 +46,7 @@ MEMS_pooled_ergm<- function(model,
   }else{
 
 
-      if(ergm::is.curved(model[[1]])){
+      if(is.curved(model[[1]])){
         warning("Bootstrap pseudolikelihood is currently the only nonparametric method implemented. This is only consistent in large networks. If the networks are small or moderately sized, consider re-estimating parametrically.")
       }
 

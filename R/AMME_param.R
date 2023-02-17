@@ -237,7 +237,7 @@ AMME_param<-function(micro_model=micro_model,
 
     #compute mean and store result
     AMME_vec[j]<-mean(x_vec,na.rm=T)
-    prop_mat<-unlist(prop_mat[!is.infinite(prop_mat)])
+    prop_mat<-prop_mat[!is.infinite(prop_mat),]
     prop_vec[j]<-mean(prop_mat,na.rm=T)
 
     if(silent==FALSE){
@@ -249,16 +249,16 @@ AMME_param<-function(micro_model=micro_model,
 
   ##package output
   summary_dat<-matrix(NA,nrow=2,ncol=5)
-  rownames(summary_dat)<-c("AMME","Prop. Change in Y")
+  rownames(summary_dat)<-c("AMME","Prop. Change in M")
   colnames(summary_dat)<-c("Estimate","Std. Dev.","lower 95% CI","Upper 95% CI","MC p-val")
 
   summary_dat[1,1]<-mean(AMME_vec,na.rm=TRUE)
   summary_dat[1,2]<-sd(AMME_vec,na.rm=TRUE)
 
   if(summary_dat[1,1]<0){
-    summary_dat[1,5]<-length(AMME_vec[which(AMME_vec>=0)])/length(AMME_vec)
+    summary_dat[1,5]<-length(AMME_vec[which(AMME_vec>=0)])/nsim
   }else{
-    summary_dat[1,5]<-length(AMME_vec[which(AMME_vec<=0)])/length(AMME_vec)
+    summary_dat[1,5]<-length(AMME_vec[which(AMME_vec<=0)])/nsim
 
   }
   summary_dat[1,3]<-quantile(AMME_vec,.025,na.rm=TRUE)

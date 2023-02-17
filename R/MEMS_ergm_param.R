@@ -48,13 +48,12 @@ MEMS_ergm_param <- function(model,
                        Sigma=cov_mat,
                        empirical = TRUE)
 
-  ergm_mat<-ergMargins::edge.prob2(model)
+ # ergm_mat<-ergMargins::edge.prob2(model)
   mat_list<-list()
 
   #create list of values to predict over
   for(i in 1:length(interval)){
-    mat_list[[i]]<-ergm_mat
-    mat_list[[i]][,micro_process]<-interval[i]
+    mat_list[[i]]<-model$network
 
   }
 
@@ -97,26 +96,29 @@ MEMS_ergm_param <- function(model,
     net_list<-list()
     for(i in 1:length(mat_list)){
 
-      pred_mat<-mat_list[[i]]
-      start.drops<-ncol(pred_mat)-5
-      pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
+     # pred_mat<-mat_list[[i]]
+    #  start.drops<-ncol(pred_mat)-5
+    #  pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
       cbcoef<-theta[j,]
-
+      cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
+      net_list[[i]]<-simulate(model,
+                              nsim=1,
+                              coef=cbcoef)
       #predict ties
-      lp <- as.matrix(pred_mat)%*%cbcoef
-      result <- c(1/(1 + exp(-lp)))
-      pred_mat<-mat_list[[i]]
-      pred_mat$y <- rbinom(nrow(mat_list[[i]]),1,result)      # create predicted ties
+    #  lp <- as.matrix(pred_mat)%*%cbcoef
+     # result <- c(1/(1 + exp(-lp)))
+    #  pred_mat<-mat_list[[i]]
+    #  pred_mat$y <- rbinom(nrow(mat_list[[i]]),1,result)      # create predicted ties
 
       #create network
-      el<-pred_mat[,c("i","j","y")]
-      el<-el[el$y==1,-c(3)]
-      el<-as.matrix(el)
+      #el<-pred_mat[,c("i","j","y")]
+      #el<-el[el$y==1,-c(3)]
+      #el<-as.matrix(el)
 
       #create network, assign vertex attributes, by creating empty network and adding new edges
-      net_list[[i]]<-model$network
-      net_list[[i]][,]<-0
-      net_list[[i]]<-network::add.edges(net_list[[i]],tail=el[,1],head=el[,2])
+    #  net_list[[i]]<-model$network
+    #  net_list[[i]][,]<-0
+     # net_list[[i]]<-network::add.edges(net_list[[i]],tail=el[,1],head=el[,2])
 
     }
 

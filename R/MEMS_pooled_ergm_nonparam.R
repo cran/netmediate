@@ -70,7 +70,6 @@ MEMS_pooled_ergm_nonparam <- function(model,
 
     for(i in 1:length(interval)){
       mat_list[[j]][[i]]<-ergm_mat_list[[j]]
-      mat_list[[j]][[i]][,micro_process]<-interval[i]
     }
   }
 
@@ -123,6 +122,7 @@ MEMS_pooled_ergm_nonparam <- function(model,
         start.drops<-ncol(pred_mat)-5
         pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
         cbcoef<-theta_list[[entry]][j,]
+        cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
 
         #predict ties
         lp <- as.matrix(pred_mat) %*% cbcoef

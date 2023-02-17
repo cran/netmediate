@@ -91,7 +91,6 @@ MEMS_glm_param <- function(model=model,
   #create list of values to predict over
   for(i in 1:length(interval)){
     mat_list[[i]]<-model_mat
-    mat_list[[i]][,micro_process]<-interval[i]
 
   }
 
@@ -141,6 +140,7 @@ MEMS_glm_param <- function(model=model,
 
         pred_mat<-mat_list[[i]]
         cbcoef<-theta[j,]
+        cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
 
         #predict ties
         lp <- as.matrix(pred_mat)%*%cbcoef

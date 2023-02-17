@@ -52,7 +52,8 @@ MEMS_pooled_ergm_param <- function(model,
                          Sigma=cov_list[[i]],
                          empirical = TRUE)
 
-    ergm_mat_list[[i]]<-ergMargins::edge.prob2(model[[i]])
+  #  ergm_mat_list[[i]]<-ergMargins::edge.prob2(model[[i]])
+      ergm_mat_list[[i]]<-model[[i]]$network
 
 
   }
@@ -68,7 +69,6 @@ MEMS_pooled_ergm_param <- function(model,
 
      for(i in 1:length(interval)){
         mat_list[[j]][[i]]<-ergm_mat_list[[j]]
-        mat_list[[j]][[i]][,micro_process]<-interval[i]
        }
   }
 
@@ -124,27 +124,30 @@ MEMS_pooled_ergm_param <- function(model,
       net_list[[entry]]<-model[[entry]]$network
       for(i in 1:length(interval)){
 
-         pred_mat<-mat_list[[entry]][[i]]
-         start.drops<-ncol(pred_mat)-5
-         pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
+        # pred_mat<-mat_list[[entry]][[i]]
+        # start.drops<-ncol(pred_mat)-5
+        # pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
          cbcoef<-theta_list[[entry]][j,]
+         cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
+         net_list[[entry]][[i]]<-simulate(model[[entry]],
+                                                nsim=1,
+                                                coef=cbcoef)
 
       #predict ties
-         lp <- as.matrix(pred_mat) %*% cbcoef
-         result <- c(1/(1 + exp(-lp)))
-         pred_mat<-mat_list[[entry]][[i]]
-         pred_mat$y <- rbinom(nrow(mat_list[[entry]][[i]]),1,result)      # create predicted ties
+      #   lp <- as.matrix(pred_mat) %*% cbcoef
+       #  result <- c(1/(1 + exp(-lp)))
+      #   pred_mat<-mat_list[[entry]][[i]]
+       #  pred_mat$y <- rbinom(nrow(mat_list[[entry]][[i]]),1,result)      # create predicted ties
 
       #create network
-         el<-pred_mat[,c("i","j","y")]
-         el<-el[el$y==1,-c(3)]
-         el<-el
+      #   el<-pred_mat[,c("i.name","j.name","y")]
+      #   el<-el[el$y==1,-c(3)]
+      #   el<-as.matrix(el)
 
       #create network, assign vertex attributes, by creating empty network and adding new edges
-         net_list[[entry]][[i]]<-model[[entry]]$network
-         net_list[[entry]][[i]][,]<-0
-         net_list[[entry]][[i]]<-network::add.edges(net_list[[entry]][[i]],
-                                                    tail=el[,2],head=el[,1])
+      #   net_list[[entry]][[i]]<-model[[entry]]$network
+      #   net_list[[entry]][[i]][,]<-0
+      #   net_list[[entry]][[i]]<-network::add.edges(net_list[[entry]][[i]],tail=el[,1],head=el[,2])
 
     }
 

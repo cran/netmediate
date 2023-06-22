@@ -1,12 +1,11 @@
 \name{MEMS}
 \alias{MEMS}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function to estimate the micro effect on macro structure (MEMS).}
 \description{
 \code{MEMS} implements parametric and nonparametric estimation routines to estimate the
 micro effect on macro structure when using a generative network model (i.e., a model
-where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{m}, which is assumed to be a predictor in the micro model of the form \eqn{f(A|m,Z)=\theta m + \gamma ^TZ}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. The MEMS when \eqn{\theta} changes from 0 to 1 is given by \deqn{MEMS=\sum_i \frac{M(\theta, m, \gamma, Z)_i-M(\gamma, Z)_i}{n}}, for \eqn{n} observations. Tuning parameters can be assigned to toggle the strength of \eqn{\theta} in model-implied estimates of \eqn{MEMS}. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
+where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{X}, which is assumed to be a predictor in the micro model of the form \eqn{A=f(\theta X + \gamma ^TZ)}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. The MEMS when \eqn{\theta} changes from 0 to 1 is given by \deqn{MEMS=\sum_i \frac{M(\theta, X, \gamma, Z)_i-M(\gamma, Z)_i}{n}}, for \eqn{n} observations. Tuning parameters can be assigned to toggle the strength of \eqn{\theta} in model-implied estimates of \eqn{MEMS}. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
 
 }
 \usage{
@@ -33,7 +32,6 @@ MEMS(model,
       controls=NULL,
       control_functions=NULL)}
 
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{the micro-model to be analyzed. Currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects. To implement pooled estimation, \code{model} should be provided as a list of \code{ergm} or \code{sienaFit} objects.
 }
@@ -60,7 +58,6 @@ MEMS(model,
 \item{controls}{a vector of character strings listing the controls to be calculated when using \code{\link{AMME}}. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 \item{control_functions}{a list of functions to calculate the macro control variables provided in controls. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 
-%-end arguments statement
 }
 \details{
 Estimates the MEMS over the provided intervals. If the macro statistic is calculated on the node or subgraph levels or on multiple network observations, the aMEMS is provided instead. Standard errors and confidence intervals are based on the sampling distribution of simulated values, which are calculated either parametrically or nonparametrically according to \code{algorithm}. Parametric estimation is typically faster, but cannot be used for nonparametric network models (e.g., quadratic assignment procedure).
@@ -586,12 +583,10 @@ MEMS(nl,
 
 
 
-}%close don't test
+}
 
-}%close examples
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~mediation }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~networks }% __ONLY ONE__ keyword per line
-\keyword{ ~macro }% __ONLY ONE__ keyword per line
-\keyword{ ~micro }% __ONLY ONE__ keyword per line
+}
+\keyword{ ~mediation }
+\keyword{ ~networks }
+\keyword{ ~macro }
+\keyword{ ~micro }

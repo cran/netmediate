@@ -1,13 +1,13 @@
 \name{AMME}
 \alias{AMME}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Function to estimate the average micro mediated effect (AMME).}
 \description{
 \code{AMME} implements parametric and nonparametric estimation routines to estimate the
-average mediated micro effect. It requires two models. The first is a generative network model (i.e., a model where the dyad, dyad-time period, or dyad-group is the unit of analysis) of the form \eqn{f(A|m,Z)=\theta m + \gamma ^TZ}, where \eqn{A} is a cross-sectional or longitudinal network or group of longitudinal or cross-sectional networks, \eqn{m} is the possibly endogenous micro process of interest and \eqn{Z} is a matrix of possibly endogenous micro level control variables.
+average mediated micro effect. It requires two models. The first is a generative network model (i.e., a model where the dyad, dyad-time period, or dyad-group is the unit of analysis) of the form \eqn{f(A_{ij}|T_{ij},Z_{ij})}, where \eqn{A} is a cross-sectional or longitudinal network or group of longitudinal or cross-sectional networks, \eqn{T} is the possibly endogenous network selection process of interest and \eqn{Z} is a matrix of possibly endogenous confounding selection mechanisms.
 
-The second model is a cross-sectional or longitudinal macro model (i.e., a model where the unit of analysis is a node, subgraph, or network or a combination of nodes, subgraphs, and networks measured collected from multiple settings [such as distinct schools or organizations]) of the form \eqn{g(y|M,X)=bM+\beta ^TX}, where \eqn{y} is the outcome variable, \eqn{M} is the mediating macro variable, and \eqn{X} is a matrix of control variables that possibly vary as a function of microprocess \eqn{m}. For a single macro statistic, the AMME when \eqn{m} is increased from 0 to 1 is given by \deqn{AMME=\frac{1}{nK} y_i(M(\theta, m, \gamma, Z),X)-y_i(M(\gamma, Z),X)}, where \eqn{n} is the number of observations and \eqn{K=2} is the number of possible combinations of values of \eqn{m} and \eqn{M}. Tuning parameters can be specified to vary the strength of \eqn{\theta}. AMME currently accepts the following micro models: \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. The following macro model objects are accepted: \code{lm}, \code{glm}, \code{lmer}, \code{glmer}, \code{gam}, \code{plm}, and \code{lnam} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} micro models. Both parametric and nonparametric estimation are available.
+The second model is a cross-sectional or longitudinal macro model (i.e., a model where the unit of analysis is a node, subgraph, or network or a combination of nodes, subgraphs, and networks measured collected from multiple settings [such as distinct schools or organizations]) of the form \eqn{g(Y_i|M_{i},X_{i},T_{i})}, where \eqn{Y_i} is the outcome variable, \eqn{M_i} is the mediating macro variable,  \eqn{X_i} is a matrix of control variables that possibly vary as a function of selection process \eqn{T_{ij}}, and \eqn{T_i} is the optional unit-level measure of {T_{ij}}. The AMME is the change in \eqn{Y_i} when \eqn{T_{ij}} allowed to vary versus set to 0 because of an associated change in \eqn{M_i}. The AMME is given by \deqn{AMME=\frac{1}{2n} y_i(T_i(t),M_i(T_{ij}),X_i(t))-y_i(T_i(t),M_i(0),X_i(t))}, where \eqn{n} is the number of observations and \eqn{t=0,T_{ij}}. AMME currently accepts the following micro models: \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. The following macro model objects are accepted: \code{lm}, \code{glm}, \code{lmer}, \code{glmer}, \code{gam}, \code{plm}, and \code{lnam} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} micro models. Both parametric and nonparametric estimation are available.
 
 }
 \usage{
@@ -36,7 +36,6 @@ AMME(micro_model,
       node_numbers=NULL)
 }
 
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{micro_model}{the micro-model. Currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects. To implement pooled estimation, \code{model} should be provided as a list of \code{ergm} or \code{sienaFit} objects.
 }
@@ -86,7 +85,6 @@ AMME(micro_model,
 }
 
 
-%-end arguments statement
 }
 \details{
 Estimates the AMME over the provided intervals. Standard errors and confidence intervals are based on the sampling distribution of simulated values, which are calculated either parametrically or nonparametrically according to \code{algorithm}. Parametric estimation is typically faster, but cannot be used for nonparametric network models (e.g., quadratic assignment procedure).
@@ -835,11 +833,9 @@ AMME(micro_model=net_glm,
 
 }
 
-}%close examples
+}
 
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~mediation }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~networks }% __ONLY ONE__ keyword per line
-\keyword{ ~macro }% __ONLY ONE__ keyword per line
-\keyword{ ~micro }% __ONLY ONE__ keyword per line
+\keyword{ ~mediation }
+\keyword{ ~networks }
+\keyword{ ~macro }
+\keyword{ ~micro }

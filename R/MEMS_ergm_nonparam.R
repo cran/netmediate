@@ -342,16 +342,16 @@ MEMS_ergm_nonparam <- function(model,
   }
 
   summary_dat<-matrix(NA,nrow=2,ncol=5)
-  rownames(summary_dat)<-c("(a)MEMS","Prop. Change in M")
+  rownames(summary_dat)<-c("MEMS","Prop. Change in M")
   colnames(summary_dat)<-c("Estimate","Std. Dev.","lower 95% CI","Upper 95% CI","BS p-val")
 
   summary_dat[1,1]<-mean(diff_data,na.rm=TRUE)
   summary_dat[1,2]<-sd(diff_data,na.rm=TRUE)
 
   if(summary_dat[1,1]<0){
-    summary_dat[1,5]<-length(diff_data[which(diff_data>=0)])/nsim
+    summary_dat[1,5]<-length(diff_data[which(diff_data>0)])/nsim
   }else{
-    summary_dat[1,5]<-length(diff_data[which(diff_data<=0)])/nsim
+    summary_dat[1,5]<-length(diff_data[which(diff_data<0)])/nsim
 
   }
   summary_dat[1,3]<-quantile(diff_data,.025,na.rm=TRUE)

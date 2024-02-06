@@ -1,6 +1,7 @@
 export(MEMS)
 export(AMME)
 export(identity_function)
+export(Moran_dv)
 import(MASS,
 	stats,
 	ergm,

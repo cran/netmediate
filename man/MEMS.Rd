@@ -81,11 +81,11 @@ If \code{full_output=TRUE}, then a list is returned with the following three ele
 \item{mems_samples}{is vector matrix corresponding where each row is a simulated draw of the MEM (or a simulation draw for a specific network in the case of temporal data or pooled estimation) and each column represents the differences in MEMS/aMEMS when subtracting the value of a macro statistic at one interval level from the next highest interval level.}
 }
 \references{
-Duxbury, Scott W. "Micro Effects on Macro Structure in Social Networks." Working paper.
+Duxbury, Scott W. 2024. "Micro Effects on Macro Structure in Social Networks." Sociological Methodology.
 
 }
 \author{
-Duxbury, Scott W. Assistant Professor, University of North Carolina--Chapel Hill, Department of Sociology.
+Duxbury, Scott W. Associate Professor, University of North Carolina--Chapel Hill, Department of Sociology.
 }
 
 \seealso{
@@ -141,8 +141,7 @@ model1<-ergm(faux.mesa.high~edges+
                nodefactor("Sex")+
                nodematch("Race")+
                nodematch("Sex")+
-               absdiff("Grade"),
-             control = control.ergm(parallel=4))
+               absdiff("Grade"))
 
 
 
@@ -246,8 +245,7 @@ model2<-ergm(faux.magnolia.high~edges+
                nodefactor("Sex")+
                nodematch("Race")+
                nodematch("Sex")+
-               absdiff("Grade"),
-             control = control.ergm(parallel=4))
+               absdiff("Grade"))
 
 
 
@@ -354,7 +352,7 @@ bt_model<-btergm(ally_data~edges+
 
 
 MEMS(bt_model,
-     micro_process="gwesp.fixed.0.7",
+     micro_process="gwesp.OTP.fixed.0.7",
      macro_function = gtrans,
      object_type = "network",
      nsim=50,
@@ -466,6 +464,78 @@ MEMS(list(SAOM_model,SAOM_model),
      full_output = FALSE,
      nsim=100,
      algorithm = "parametric")
+
+
+
+
+
+
+
+
+################################################
+## Selection and Influence in SAOM when analyzing
+## co-evolution of networks and behavior
+################################################
+
+
+##Example Moran decomposition
+library(RSiena)
+
+###run the model--taken from RSiena scripts
+
+# prepare first two waves of s50 data for RSiena analysis:
+(thedata <- sienaDataCreate(
+  friendship = sienaDependent(array(
+    c(s501,s502),dim=c(50,50,2))),
+  drinking = sienaDependent(s50a[,1:2])
+))
+
+# specify a model with (generalised) selection and influence:
+themodel <- getEffects(thedata)
+themodel <- includeEffects(themodel,name='friendship',gwespFF)
+themodel <- includeEffects(themodel,name='friendship',simX,interaction1='drinking')
+themodel <- includeEffects(themodel,name='drinking',avSim,interaction1='friendship')
+themodel
+
+
+
+# estimate this model:
+estimation.options <- sienaAlgorithmCreate(projname='results',cond=FALSE,seed=1234567)
+(theresults <- siena07(estimation.options,data=thedata,effects=themodel))
+
+
+
+##calculate MEMS for selection effect
+  #Uses Moran_dv--a function internally called by netmediate
+  #to calculate change in amount of network autocorrelation
+  #as a function of both endogenous behavior and network dependent
+  #variables
+
+MEMS(theresults,
+     micro_process="drinking similarity",
+     macro_function =Moran_dv,
+     object_type = "network",
+     SAOM_data = thedata,
+     silent=FALSE,
+     nsim=50)
+
+#just influence
+MEMS(theresults,
+     micro_process="drinking average similarity",
+     macro_function =Moran_dv,
+     object_type = "network",
+     SAOM_data = thedata,
+     silent=FALSE,
+     nsim=50)
+
+##joint effect of selection and influence
+MEMS(theresults,
+     micro_process=c("drinking similarity","drinking average similarity"),
+     macro_function =Moran_dv,
+     object_type = "network",
+     SAOM_data = thedata,
+     silent=FALSE,
+     nsim=500)
 
 
 

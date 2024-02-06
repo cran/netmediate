@@ -57,13 +57,17 @@ MEMS_saom <- function(model,
                        empirical = TRUE)
 
 
-
-  rate_theta<-MASS::mvrnorm(n=nsim,
+  if(model$nDependentVariables==1){
+    rate_theta<-MASS::mvrnorm(n=nsim,
                             mu=model$rate,
                             Sigma= diag(model$vrate^2,ncol=length(model$vrate),nrow=length(model$vrate)),
                             empirical=TRUE)
 
-  theta<-cbind(rate_theta,theta)
+    theta<-cbind(rate_theta,theta)
+    if("Moran_dv"%in%utils::lsf.str()){
+      stop("Moran_dv function only applicable for models with behavioral function.")
+    }
+  }
 
   output_data<-matrix(NA,nrow=nsim,ncol=length(interval))
   effects_obj<-rbind(attributes(model$f)$condEffects,model$effects) #create effects object
@@ -129,7 +133,7 @@ MEMS_saom <- function(model,
     for(j in 1:length(net_list)){
 
       #convert to network object from edgelist
-      net_list[[j]]<-c(list(t(sim_nets$f$Data1$nets$Network[[1]]$mat1)), #starting observed network
+      net_list[[j]]<-c(list(t(sim_nets$f$Data1$nets[[1]][[1]]$mat1)), #starting observed network
                        sim_nets$sims[[j]][[1]][[1]]) #net_list[[i]] contains edge lists for all unique networks for the number of panels minus 1
 
       for(entry in 1:length(net_list[[j]])){
@@ -163,7 +167,7 @@ MEMS_saom <- function(model,
 
          if(length(SAOM_data$cCovars)>0){
            for(k in 1:length(SAOM_data$cCovars)){
-            network::set.vertex.attribute(net_list[[j]][[entry]],names(SAOM_data$cCovars)[k],SAOM_data$cCovars[[k]][,1])
+            network::set.vertex.attribute(net_list[[j]][[entry]],names(SAOM_data$cCovars)[k],SAOM_data$cCovars[[k]][1])
           }
         }
 

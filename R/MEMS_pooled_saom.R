@@ -58,14 +58,19 @@ MEMS_pooled_saom <- function(model,
                        Sigma=cov_mat,
                        empirical = TRUE)
 
+   if(model[[i]]$nDependentVariables==1){
+     rate_theta<-MASS::mvrnorm(n=nsim,
+                               mu=model[[i]]$rate,
+                               Sigma= diag(model[[i]]$vrate^2,ncol=length(model[[i]]$vrate),nrow=length(model[[i]]$vrate)),
+                               empirical=TRUE)
+     theta_list[[i]]<-cbind(rate_theta,theta)
+     if("Moran_dv"%in%utils::lsf.str()){
+       stop("Moran_dv function only applicable for models with behavioral function.")
+     }
+
+   }
 
 
-    rate_theta<-MASS::mvrnorm(n=nsim,
-                            mu=model[[i]]$rate,
-                            Sigma= diag(model[[i]]$vrate^2,ncol=length(model[[i]]$vrate),nrow=length(model[[i]]$vrate)),
-                            empirical=TRUE)
-
-    theta_list[[i]]<-cbind(rate_theta,theta)
 
     output_list[[i]]<-matrix(NA,nrow=nsim,ncol=length(interval))
     effects_list[[i]]<-rbind(attributes(model[[i]]$f)$condEffects,model[[i]]$effects) #create effects object
@@ -132,7 +137,7 @@ MEMS_pooled_saom <- function(model,
        for(j in 1:length(net_list)){
 
          #convert to network object from edgelist
-         net_list[[j]]<-c(list(t(sim_nets$f$Data1$nets$Network[[1]]$mat1)), #starting observed network
+         net_list[[j]]<-c(list(t(sim_nets$f$Data1$nets[[1]][[1]]$mat1)), #starting observed network
                           sim_nets$sims[[j]][[1]][[1]]) #net_list[[i]] contains edge lists for all unique networks for the number of panels minus 1
          node_number<-length(SAOM_data[[model_entry]]$nodeSets$Actors)
 

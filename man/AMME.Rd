@@ -7,7 +7,7 @@ Function to estimate the average micro mediated effect (AMME).}
 \code{AMME} implements parametric and nonparametric estimation routines to estimate the
 average mediated micro effect. It requires two models. The first is a generative network model (i.e., a model where the dyad, dyad-time period, or dyad-group is the unit of analysis) of the form \eqn{f(A_{ij}|T_{ij},Z_{ij})}, where \eqn{A} is a cross-sectional or longitudinal network or group of longitudinal or cross-sectional networks, \eqn{T} is the possibly endogenous network selection process of interest and \eqn{Z} is a matrix of possibly endogenous confounding selection mechanisms.
 
-The second model is a cross-sectional or longitudinal macro model (i.e., a model where the unit of analysis is a node, subgraph, or network or a combination of nodes, subgraphs, and networks measured collected from multiple settings [such as distinct schools or organizations]) of the form \eqn{g(Y_i|M_{i},X_{i},T_{i})}, where \eqn{Y_i} is the outcome variable, \eqn{M_i} is the mediating macro variable,  \eqn{X_i} is a matrix of control variables that possibly vary as a function of selection process \eqn{T_{ij}}, and \eqn{T_i} is the optional unit-level measure of {T_{ij}}. The AMME is the change in \eqn{Y_i} when \eqn{T_{ij}} allowed to vary versus set to 0 because of an associated change in \eqn{M_i}. The AMME is given by \deqn{AMME=\frac{1}{2n} y_i(T_i(t),M_i(T_{ij}),X_i(t))-y_i(T_i(t),M_i(0),X_i(t))}, where \eqn{n} is the number of observations and \eqn{t=0,T_{ij}}. AMME currently accepts the following micro models: \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. The following macro model objects are accepted: \code{lm}, \code{glm}, \code{lmer}, \code{glmer}, \code{gam}, \code{plm}, and \code{lnam} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} micro models. Both parametric and nonparametric estimation are available.
+The second model is a cross-sectional or longitudinal macro model (i.e., a model where the unit of analysis is a node, subgraph, or network or a combination of nodes, subgraphs, and networks measured collected from multiple settings [such as distinct schools or organizations]) of the form \eqn{g(Y_i|M_{i},X_{i},T_{i})}, where \eqn{Y_i} is the outcome variable, \eqn{M_i} is the mediating macro variable,  \eqn{X_i} is a matrix of control variables that possibly vary as a function of selection process \eqn{T_{ij}}, and \eqn{T_i} is the optional unit-level measure of \eqn{T_{ij}}. The AMME is the change in \eqn{Y_i} when \eqn{T_{ij}} allowed to vary versus set to 0 because of an associated change in \eqn{M_i}. The AMME is given by \deqn{AMME=\frac{1}{2n} y_i(T_i(t),M_i(T_{ij}),X_i(t))-y_i(T_i(t),M_i(0),X_i(t))}, where \eqn{n} is the number of observations and \eqn{t=0,T_{ij}}. AMME currently accepts the following micro models: \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. The following macro model objects are accepted: \code{lm}, \code{glm}, \code{lmer}, \code{glmer}, \code{gam}, \code{plm}, and \code{lnam} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} micro models. Both parametric and nonparametric estimation are available.
 
 }
 \usage{
@@ -69,7 +69,7 @@ AMME(micro_model,
 }
 \item{SAOM_var}{optional parameter when \code{micro_model} is a \code{\link[RSiena]{sienaFit}} object. \code{SAOM_var} is a list of of the \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}} objects used to assign time varying node and dyad covariates when calling \code{\link[RSiena]{sienaDataCreate}}. If provided, \code{netmediate} assigns the varying node covariates and dyad covariates to each simulated network. This parameter is required when \code{macro_function} computes a statistic that varies as a function of time varying node or dyad covariates (i.e., network segregation, assorativity). Time invariant characteristics (\code{\link[RSiena]{coCovar}} and \code{\link[RSiena]{coDyadCovar}}) are handled internally by \code{MEMS} and should not be provided. When providing a list of \code{\link[RSiena]{sienaFit}} objects for pooled estimation, \code{SAOM_var} should be provided as a list of lists, where each entry in the list contains a list of \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}} objects associated with corresponding \code{\link[RSiena]{sienaFit}} object.
 }
-\item{time_interval}{an optional parameter to be used when \code{micro_model} is a  \code{\link[relevent]{rem.dyad}} object. May be provided as a numeric vector or the character string \code{"aggregate"}. If a numeric vector is provided unique network snapshots at each interval. For example, \code{time_interval=c(0,2,3)} would induce two networks, one for the 0 - 2 time period and one for the 2 - 3 time period. If specified as \code{"aggregate"}, the AMME is calculated by creating an aggregated cross-sectional representation of the entire event sequence. If left \code{NULL}, defaults to |\code{"aggregate"}. Note that \code{time_interval} must correspond to the time periods observed in \code{macro_model}. That is, \code{time_interval} must be set to \code{"aggregate"} when \code{macro_model} is cross-sectional and the entries in \code{time_interval} must correspond to the time periods observed in the repated measurement data when \code{macro_model} is longitudinal.
+\item{time_interval}{an optional parameter to be used when \code{micro_model} is a  \code{\link[relevent]{rem.dyad}} object. May be provided as a numeric vector or the character string \code{"aggregate"}. If a numeric vector is provided unique network snapshots at each interval. For example, \code{time_interval=c(0,2,3)} would induce two networks, one for the 0 - 2 time period and one for the 2 - 3 time period. If specified as \code{"aggregate"}, the AMME is calculated by creating an aggregated cross-sectional representation of the entire event sequence. If left \code{NULL}, defaults to |\code{"aggregate"}. Note that \code{time_interval} must correspond to the time periods observed in \code{macro_model}. That is, \code{time_interval} must be set to \code{"aggregate"} when \code{macro_model} is cross-sectional and the entries in \code{time_interval} must correspond to the time periods observed in the repeated measurement data when \code{macro_model} is longitudinal.
 }
 \item{covar_list}{an optional list of sender/receiver covariates used in \code{\link[relevent]{rem.dyad}} estimation. Only required when a \code{\link[relevent]{rem.dyad}} object is the \code{micro_model} and covariates are in the \code{\link[relevent]{rem.dyad}} call. The list format should correspond to the format required by \code{\link[relevent]{rem.dyad}}.
 }
@@ -109,10 +109,10 @@ If \code{full_output=TRUE}, then a list is returned with the following three ele
 }
 
 \references{
-Duxbury, Scott W. "Micro-macro Indirect Effects in Social Networks." Working paper.
+Duxbury, Scott W. 2024. "Micro-macro Mediation Analysis in Social Networks." Sociological Methodology.
 }
 \author{
-Duxbury, Scott W. Assistant Professor, University of North Carolina--Chapel Hill, Department of Sociology.
+Duxbury, Scott W. Associate Professor, University of North Carolina--Chapel Hill, Department of Sociology.
 }
 
 \seealso{
@@ -173,8 +173,7 @@ ergm_model<-ergm(faux.mesa.high~edges+
                    nodefactor("Sex")+
                    nodematch("Race")+
                    nodematch("Sex")+
-                   absdiff("Grade"),
-                 control = control.ergm(parallel=4))
+                   absdiff("Grade"))
 
 
 ###create node-level data for second stage analysis with
@@ -385,7 +384,7 @@ lm_model<- lm(outdeg~indeg +v_id,
 
 AMME(micro_model=bt_model,
      macro_model=lm_model,
-     micro_process="gwesp.fixed.0.7",
+     micro_process="gwesp.OTP.fixed.0.7",
      mediator="indeg",
      macro_function=function(x){degree(x,cmode="indegree")},
      link_id=ally_node_data$link_id, #provide node-panel identifiers
@@ -416,7 +415,7 @@ lm_model<- lm(outdeg~indeg+transitivity +v_id,
 
 AMME(micro_model=bt_model,
      macro_model=lm_model,
-     micro_process="gwesp.fixed.0.7",
+     micro_process="gwesp.OTP.fixed.0.7",
      mediator="indeg",
      macro_function=function(x){degree(x,cmode="indegree")},
      link_id=list(ally_node_data$link_id,ally_node_data$t_id),#list of IDs for nodes and time
@@ -543,8 +542,7 @@ model1<-ergm(faux.mesa.high~edges+
                nodefactor("Sex")+
                nodematch("Race")+
                nodematch("Sex")+
-               absdiff("Grade"),
-             control = control.ergm(parallel=4))
+               absdiff("Grade"))
 
 data("faux.magnolia.high")
 model2<-ergm(faux.magnolia.high~edges+
@@ -553,8 +551,7 @@ model2<-ergm(faux.magnolia.high~edges+
                nodefactor("Sex")+
                nodematch("Race")+
                nodematch("Sex")+
-               absdiff("Grade"),
-             control = control.ergm(parallel=4))
+               absdiff("Grade"))
 
 
 #create node level data

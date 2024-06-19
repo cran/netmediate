@@ -59,11 +59,14 @@ MEMS_pooled_saom <- function(model,
                        empirical = TRUE)
 
    if(model[[i]]$nDependentVariables==1){
-     rate_theta<-MASS::mvrnorm(n=nsim,
+     if(attributes(SAOM_data[[i]]$depvars[[1]])$symmetric==FALSE){
+
+        rate_theta<-MASS::mvrnorm(n=nsim,
                                mu=model[[i]]$rate,
                                Sigma= diag(model[[i]]$vrate^2,ncol=length(model[[i]]$vrate),nrow=length(model[[i]]$vrate)),
                                empirical=TRUE)
-     theta_list[[i]]<-cbind(rate_theta,theta)
+        theta_list[[i]]<-cbind(rate_theta,theta)
+     }
      if("Moran_dv"%in%utils::lsf.str()){
        stop("Moran_dv function only applicable for models with behavioral function.")
      }
@@ -110,7 +113,7 @@ MEMS_pooled_saom <- function(model,
   for(model_entry in 1:length(model)){
     for(i in 1:length(interval)){
 
-    #create manipulated parameter--this is equivalent to setting the variable at a specific value
+    #create manipulated parameter
        theta2<-theta_list[[model_entry]]
        theta_index<-match(micro_process,effects_list[[model_entry]]$effectName) #get index for parameter to be altered
        theta2[,theta_index]<-theta2[,theta_index]*interval[i]
@@ -163,7 +166,8 @@ MEMS_pooled_saom <- function(model,
                  if(is.null(names(SAOM_var[[model_entry]])[[k]])){
                    SAOM_names<-paste("varDyadsCovar",k)}else{
                      SAOM_names<-names(SAOM_var[[model_entry]])[[k]]}
-                 network::set.vertex.attribute(net_list[[j]][[entry]],SAOM_names,SAOM_var[[model_entry]][[k]][,entry])
+                 network::set.vertex.attribute(net_list[[j]][[entry]],
+                                               SAOM_names,SAOM_var[[model_entry]][[k]][,entry])
                }
              }
 
@@ -172,13 +176,17 @@ MEMS_pooled_saom <- function(model,
 
           if(length(SAOM_data[[model_entry]]$cCovars)>0){
               for(k in 1:length(SAOM_data[[model_entry]]$cCovars)){
-              network::set.vertex.attribute(net_list[[j]],names(SAOM_data[[model_entry]]$cCovars)[k],SAOM_data[[model_entry]]$cCovars[[k]][,ncol(SAOM_data[[model_entry]]$cCovars[[k]])])
+              network::set.vertex.attribute(net_list[[j]][[entry]],
+                                            names(SAOM_data[[model_entry]]$cCovars)[k],
+                                            as.vector(SAOM_data[[model_entry]]$cCovars[[k]]))
                }
             }
 
            if(length(SAOM_data[[model_entry]]$dycCovars)>0){
               for(k in 1:length(SAOM_data[[model_entry]]$dycCovars)){
-                 network::set.vertex.attribute(net_list[[j]],names(SAOM_data[[model_entry]]$dycCovars)[k],SAOM_data[[model_entry]]$dycCovars[[k]][,ncol(SAOM_data[[model_entry]]$dycCovars[[k]])])
+                 network::set.edge.attribute(net_list[[j]][[entry]],
+                                               names(SAOM_data[[model_entry]]$dycCovars)[k],
+                                               as.vector(SAOM_data[[model_entry]]$dycCovars[[k]]))
              }
             }
 

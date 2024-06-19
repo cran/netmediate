@@ -58,12 +58,15 @@ MEMS_saom <- function(model,
 
 
   if(model$nDependentVariables==1){
-    rate_theta<-MASS::mvrnorm(n=nsim,
+    if(attributes(SAOM_data$depvars[[1]])$symmetric==FALSE){
+       rate_theta<-MASS::mvrnorm(n=nsim,
                             mu=model$rate,
                             Sigma= diag(model$vrate^2,ncol=length(model$vrate),nrow=length(model$vrate)),
                             empirical=TRUE)
 
-    theta<-cbind(rate_theta,theta)
+       theta<-cbind(rate_theta,theta)
+    }
+
     if("Moran_dv"%in%utils::lsf.str()){
       stop("Moran_dv function only applicable for models with behavioral function.")
     }
@@ -167,13 +170,17 @@ MEMS_saom <- function(model,
 
          if(length(SAOM_data$cCovars)>0){
            for(k in 1:length(SAOM_data$cCovars)){
-            network::set.vertex.attribute(net_list[[j]][[entry]],names(SAOM_data$cCovars)[k],SAOM_data$cCovars[[k]][1])
+            network::set.vertex.attribute(net_list[[j]][[entry]],
+                                          names(SAOM_data$cCovars)[k],
+                                          as.vector(SAOM_data$cCovars[[k]]))
           }
         }
 
        if(length(SAOM_data$dycCovars)>0){
           for(k in 1:length(SAOM_data$dycCovars)){
-            network::set.vertex.attribute(net_list[[j]][[entry]],names(SAOM_data$dycCovars)[k],SAOM_data$dycCovars[[k]][,1])
+            network::set.edge.attribute(net_list[[j]][[entry]],
+                                          names(SAOM_data$dycCovars)[k],
+                                          as.vector(SAOM_data$dycCovars[[k]]))
           }
         }
 

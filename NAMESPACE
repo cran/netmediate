@@ -2,6 +2,7 @@ export(MEMS)
 export(AMME)
 export(identity_function)
 export(Moran_dv)
+export(compare_MEMS)
 import(MASS,
 	stats,
 	ergm,

@@ -1,5 +1,5 @@
-0c98857afa55c94aa77e467a81a930bc *DESCRIPTION
-f0b22eb9a902e958170a68c93b190c76 *NAMESPACE
+e9b310841f955e3d0d157b3e2f644931 *DESCRIPTION
+306747ebce37b84796bff6833d09e096 *NAMESPACE
 71a92aabdf2b99aad54e6bfa0378b1b8 *R/AMME.R
 99b9e6e10cfca8d0da1f96a242d0f8de *R/AMME_nonparam.R
 ff9fa55eccfaad10534912128389cc30 *R/AMME_param.R
@@ -14,14 +14,16 @@ d0823c5c5f01a2da4589e7b5c24fca1f *R/MEMS_ergm_nonparam.R
 013df79de25d80a42051e4334aad4d15 *R/MEMS_pooled_ergm.R
 b6d3c76d980e74cdda49df26ed533d2e *R/MEMS_pooled_ergm_nonparam.R
 173cddd7e4dfc140da4893471eb8ac2f *R/MEMS_pooled_ergm_param.R
-8fd9a49b67a61f220dced90414cf0970 *R/MEMS_pooled_saom.R
+6a540986f40ac6f7c58a8f429430d8c7 *R/MEMS_pooled_saom.R
 0793ed20e839aa748c2c83377bd522ab *R/MEMS_rem.R
 efcae9622a3d34ee05ee1ee57b238f07 *R/MEMS_rem_param.R
-9cf6cfb54b8163ae183eaf2ac3b6459d *R/MEMS_saom.R
+b8bbff8144f32237cf129d28e64df25a *R/MEMS_saom.R
 2a6f23736e8a796b0ceecbe555bb76f9 *R/Moran_dv.R
+941d3e8d2b307cd0facef9019ba2f83e *R/compare_MEMS.R
 3a24a3fd9d0858a9a6c2f7a44834ec26 *R/identity_function.R
 f4bd51f5e8dfbedf86f91183fb835056 *README.md
 e81f780904d01dc158f52be5bdb6c701 *man/AMME.Rd
 1750c228bbc0193e3001fedf8ed0235e *man/MEMS.Rd
 f01d0b14aa903097f18a092b9fc6cf7b *man/Moran_dv.Rd
+af9425cdbd55ef44a6bc69600390a3dc *man/compare_MEMS.Rd
 46684ae2fa97440915ddeca7e6374e4e *man/identity_function.Rd

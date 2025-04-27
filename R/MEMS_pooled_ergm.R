@@ -25,7 +25,8 @@ MEMS_pooled_ergm<- function(model,
                      mediator=mediator,
                      link_id=link_id,
                      controls=controls,
-                     control_functions=control_functions) {
+                     control_functions=control_functions,
+                     sensitivity_ev=sensitivity_ev) {
 
 
   if(algorithm=="parametric"){
@@ -41,7 +42,8 @@ MEMS_pooled_ergm<- function(model,
                                       mediator=mediator,
                                       link_id=link_id,
                                       controls=controls,
-                                      control_functions=control_functions)
+                                      control_functions=control_functions,
+                                      sensitivity_ev=sensitivity_ev)
 
   }else{
 
@@ -61,7 +63,8 @@ MEMS_pooled_ergm<- function(model,
                                        mediator=mediator,
                                        link_id=link_id,
                                        controls=controls,
-                                       control_functions=control_functions)
+                                       control_functions=control_functions,
+                                       sensitivity_ev=sensitivity_ev)
 
   }
 

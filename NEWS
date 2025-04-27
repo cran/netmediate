@@ -1,0 +1,9 @@
+netmediate v 1.1
+==================
+- New functionality for tergm and stergm objects
+- New Moran_dv function for calculating network autocorrelation between network and behavior dependent variables in sienaFit objects
+- New sensitivity test option for MEMS and AMME calls to assess robustness to omitted confounding variables
+- Plotting functionality for sensitivity tests
+- New compare_MEMS function for testing differences in MEMS estimates within the same model, between two nested models, or between two models with distinct functional forms.
+- New mediate_MEMS function for decomposing direct, indirect, and total MEMS estimates. Includes functionality for testing robustness to researchers' choice of model.
+- Fixed a bug in the calculation of p-values for MEMS estimates in pooled SAOM (lists of sienaFit subjects)

@@ -29,7 +29,8 @@ MEMS_glm<- function(model=model,
                     mediator=mediator,
                     link_id=link_id,
                     controls=controls,
-                    control_functions=control_functions) {
+                    control_functions=control_functions,
+                    sensitivity_ev=sensitivity_ev) {
 
   message("Global and node-level statistics that are a function of *exogenous* node-level and edge-level characteristics are not intrinsically available for glm and glmer objects. If the macro statistic of interest is a function of node or edge-level exogenous characteristics, adjust macro_function to assign exogenous node and edge attributes before computing macro statistic of interest. See help file for examples.")
   if(is.null(node_numbers)){
@@ -50,7 +51,8 @@ MEMS_glm<- function(model=model,
                             mediator=mediator,
                             link_id=link_id,
                             controls=controls,
-                            control_functions=control_functions)
+                            control_functions=control_functions,
+                            sensitivity_ev=sensitivity_ev)
 
   }else{
 
@@ -68,7 +70,8 @@ MEMS_glm<- function(model=model,
                                mediator=mediator,
                                link_id=link_id,
                                controls=controls,
-                               control_functions=control_functions)
+                               control_functions=control_functions,
+                               sensitivity_ev=sensitivity_ev)
 
   }
 

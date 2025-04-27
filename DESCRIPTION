@@ -1,8 +1,8 @@
 Package: netmediate
+Version: 1.1.0
 Type: Package
 Title: Micro-Macro Analysis for Social Networks
-Version: 1.0.1
-Authors@R: person("Scott", "Duxbury",email="duxbury@email.unc.edu", role=c("aut", "cre", "cph"))
+Authors@R: c(person("Scott", "Duxbury",email="duxbury@email.unc.edu", role=c("aut", "cre", "cph")), person("Xin", "Zhao", email="xinz22@unc.edu",role=c("ctb")))
 Maintainer: Scott Duxbury <duxbury@email.unc.edu>
 Description: Estimates micro effects on macro structures (MEMS) and average micro mediated effects (AMME).
     URL: <https://github.com/sduxbury/netmediate>.
@@ -13,12 +13,13 @@ Description: Estimates micro effects on macro structures (MEMS) and average micr
     Duxbury, Scott (2023) <doi:10.1177/00811750231209040>.
     Duxbury, Scott (2024) <doi:10.1177/00811750231220950>.
 License: GPL (>= 2)
-Imports: MASS, btergm, stats, ergm, RSiena, sna, network, ergMargins,
-        VGAM, plyr, lme4, plm, gam, intergraph
+Imports: MASS, btergm, stats, ergm, tergm, RSiena, sna, network,
+        ergMargins, VGAM, plyr, lme4, plm, gam, intergraph
 Suggests: Matrix, igraph, relevent, statnet, statnet.common
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2024-06-18 10:56:14 UTC; Scott D
-Author: Scott Duxbury [aut, cre, cph]
+Packaged: 2025-04-21 17:38:28 UTC; Scott D
+Author: Scott Duxbury [aut, cre, cph],
+  Xin Zhao [ctb]
 Repository: CRAN
-Date/Publication: 2024-06-19 08:40:07 UTC
+Date/Publication: 2025-04-27 15:30:03 UTC

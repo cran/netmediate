@@ -5,7 +5,7 @@ Function to estimate the micro effect on macro structure (MEMS).}
 \description{
 \code{MEMS} implements parametric and nonparametric estimation routines to estimate the
 micro effect on macro structure when using a generative network model (i.e., a model
-where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{X}, which is assumed to be a predictor in the micro model of the form \eqn{A=f(\theta X + \gamma ^TZ)}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. The MEMS when \eqn{\theta} changes from 0 to 1 is given by \deqn{MEMS=\sum_i \frac{M(\theta, X, \gamma, Z)_i-M(\gamma, Z)_i}{n}}, for \eqn{n} observations. Tuning parameters can be assigned to toggle the strength of \eqn{\theta} in model-implied estimates of \eqn{MEMS}. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
+where the dyad, dyad-time period, or dyad-group is the unit of analysis). The MEMS is defined in postestimation as a function of the possibly endogenous micro process \eqn{X}, which is assumed to be a predictor in the micro model of the form \eqn{A=f(\theta X + \gamma ^TZ)}, where \eqn{Z} is a matrix of possibly endogenous controls and \eqn{A} is the network of interest. The MEMS is given by \deqn{MEMS=\sum_i \frac{M(\theta, X, \gamma, Z)_i-M(\gamma, Z)_i}{n}}, for \eqn{n} observations. Tuning parameters can be assigned to toggle the strength of \eqn{\theta} in model-implied estimates of \eqn{MEMS}. \code{MEMS} currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects and implements both parametric and nonparametric estimation. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects.
 
 }
 \usage{
@@ -30,7 +30,8 @@ MEMS(model,
       mediator=NULL,
       link_id=NULL,
       controls=NULL,
-      control_functions=NULL)}
+      control_functions=NULL,
+      sensitivity_ev=TRUE)}
 
 \arguments{
   \item{model}{the micro-model to be analyzed. Currently accepts \code{glm}, \code{glmer}, \code{ergm}, \code{btergm}, \code{sienaFit}, \code{rem.dyad}, and \code{netlogit} objects. Pooled estimation for multiple network models is also implemented for \code{ergm} and \code{sienaFit} objects. To implement pooled estimation, \code{model} should be provided as a list of \code{ergm} or \code{sienaFit} objects.
@@ -57,6 +58,7 @@ MEMS(model,
 \item{link_id}{a vector or list of vectors corresponding to unique identifiers. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 \item{controls}{a vector of character strings listing the controls to be calculated when using \code{\link{AMME}}. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
 \item{control_functions}{a list of functions to calculate the macro control variables provided in controls. Intended for internal use with the \code{\link{AMME}} function; not intended for end users. }
+\item{sensitivity_ev}{an optional parameter telling \code{MEMS} whether to return sensitivity tests baased on the E-value and risk ratios, as described by Duxbury and Zhao (2025). Defaults to \code{TRUE}}
 
 }
 \details{
@@ -64,7 +66,7 @@ Estimates the MEMS over the provided intervals. If the macro statistic is calcul
 
 \code{macro_function} is the workhorse component of MEMS. The function should calculate the macro statistic of interest. \code{netmediate} currently supports functions calculated on \code{\link[igraph]{igraph}} and \code{\link[network]{network}} objects, which should be specified as using the \code{object_type} argument. These may be functions inherent to the \code{\link[statnet]{statnet}} and \code{\link[igraph]{igraph}} software package or they may be functions from other packages that accept \code{\link[network]{network}}/\code{\link[igraph]{igraph}} objects. They may also be user-defined functions that accept \code{\link[network]{network}} or \code{\link[igraph]{igraph}} objects as input and return a numeric value or vector of numeric values as output. It is also possible to over-ride the \code{\link[network]{network}} and \code{\link[igraph]{igraph}} object requirements within a user function. To do so, set the \code{object_type} argument to either \code{\link[network]{network}} or \code{\link[igraph]{igraph}} and then define a user-function that accepts a \code{\link[network]{network}} or \code{\link[igraph]{igraph}} object as its input, converts the object to the desired data structure, calculates the statistic of interest, and finally returns a numeric value or vector of numeric values. See examples below for an illustration.
 
-By default, the MEMS is provided by averaging over the distribution of simulated values. If \code{full_output} is set to \code{TRUE}, the entire distribution of simualted statistics is returned. This may be useful when the median or mode of the simulated distribution is required or if the researcher wants to inspect the distributional shape of simulated values.
+By default, the MEMS is provided by averaging over the distribution of simulated values. If \code{full_output} is set to \code{TRUE}, the entire distribution of simualted statistics is returned. This may be useful when the median or mode of the simulated distribution is required or if the researcher wants to inspect the distributional shape of simulated values. When the \code{sensitivity_ev} argumetn is left at \code{TRUE} (the default), \code{MEMS} will return an E-value and a risk ratio assessing how robust the MEMS estimate is to a hypothetical omitted confounding variable. A higher value for either metric means that an omitted variable would have to a large effect on the macro outcome to nullify the effect of the parameterized micro process. See Duxbury and Zhou (2025) for details on interpretation.
 
 \code{MEMS} also supports pooled estimation for multiple \code{\link[ergm]{ergm}} or \code{\link[RSiena]{sienaFit}} objects. To use pooled estimation, the model parameter should be specified as a list of \code{\link[ergm]{ergm}} or \code{\link[RSiena]{sienaFit}} objects. If using \code{\link[RSiena]{sienaFit}}, the \code{SAOM_data} argument will also need to be specified as an ordered list with elements corresponding to entries in the list of \code{\link[RSiena]{sienaFit}} objects. Similarly, the \code{SAOM_var} parameter will need to be specified as a list of lists, where each entry in the list is, itself, a list containing all \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}} objects used to calculate macro statistics of interest. Note that \code{SAOM_var} should not be provided if the macro statistic of interest is not a function of the variables contained in \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}}.
 
@@ -83,9 +85,15 @@ If \code{full_output=TRUE}, then a list is returned with the following three ele
 \references{
 Duxbury, Scott W. 2024. "Micro Effects on Macro Structure in Social Networks." Sociological Methodology.
 
+Wertsching, Jenna, and Scott W. Duxbury. Working paper. "Micro Effects on Macro Structure: Identification, Comparison between Nested Models, and Sensitivity Tests for Functional Form."
+
+Duxbury, Scott W., and Xin Zhao. Working paper. "Sensitivity Tests for Micro-Macro Network Analysis."
+
 }
 \author{
 Duxbury, Scott W. Associate Professor, University of North Carolina--Chapel Hill, Department of Sociology.
+
+Zhao, Xin (Louis). PhD Candidate, University of North Carolina--Chapel Hill, Department of Sociology
 }
 
 \seealso{

@@ -33,7 +33,8 @@ AMME(micro_model,
       net_logit_y=NULL,
       net_logit_x=NULL,
       group_id=NULL,
-      node_numbers=NULL)
+      node_numbers=NULL,
+      sensitivity_ev=TRUE)
 }
 
 \arguments{
@@ -83,6 +84,7 @@ AMME(micro_model,
 }
 \item{node_numbers}{a numeric vector containing the number of nodes in each group_id when using \code{glm} or \code{\link[lme4]{glmer}}. If estimating AMME aggregated over all networks (i.e., \code{group_id=NULL}), this shoud be the total number of nodes in all networks. Required when using \code{glm} or \code{\link[lme4]{glmer}}, ignored otherwise.
 }
+\item{sensitivity_ev}{an optional parameter telling \code{AMME} whether to return sensitivity tests baased on the E-value and risk ratios, as described by Duxbury and Zhao (2025). Defaults to \code{TRUE}}
 
 
 }
@@ -94,6 +96,8 @@ Estimates the AMME over the provided intervals. Standard errors and confidence i
 \code{netmediate} currently supports functions calculated on \code{\link[igraph]{igraph}} and \code{\link[network]{network}} objects, which should be specified using the \code{object_type} argument. These may be functions inherent to the \code{\link[statnet]{statnet}} and \code{\link[igraph]{igraph}} software package or they may be functions from other packages that accept \code{\link[network]{network}}/\code{\link[igraph]{igraph}} objects. The functions provided to \code{macro_function} and \code{control_functions} may also be user-defined functions that accept \code{\link[network]{network}} or \code{\link[igraph]{igraph}} objects as inputs and return a numeric value or vector of numeric values as output. It is also possible to over-ride the \code{\link[network]{network}} and \code{\link[igraph]{igraph}} object requirements within a user function. To do so, set the \code{object_type} argument (or relevant element within the \code{object_type} argument when \code{object_type} is a list) to either \code{\link[network]{network}} or \code{\link[igraph]{igraph}} and then define a user-function that accepts a \code{\link[network]{network}} or \code{\link[igraph]{igraph}} object as its input, converts the object to the desired data structure, calculates the statistic of interest, and  returns a numeric value or vector of numeric values. See examples below for an illustration.
 
 By default, the AMME is calculated by averaging over the distribution of simulated values. If \code{full_output} is set to \code{TRUE}, the distribution of simualted statistics is returned. This may be useful when the median or mode of the simulated distribution is required or if the researcher wants to inspect the distributional shape of simulated values.
+
+When the \code{sensitivity_ev} argumetn is left at \code{TRUE} (the default), \code{AMME} will return an E-value and a risk ratio assessing how robust the AMME estimate is to a hypothetical omitted confounding variable. A higher value for either metric means that an omitted variable would have to a large effect on the macro outcome to nullify the effect of the parameterized micro process. See Duxbury and Zhou (2025) for details on interpretation.
 
 \code{AMME} also supports pooled estimation for when multiple \code{\link[ergm]{ergm}} or \code{\link[RSiena]{sienaFit}} objects are used as the \code{micro_model}. To use pooled estimation, the model parameter should be specified as a list of \code{\link[ergm]{ergm}} or \code{\link[RSiena]{sienaFit}} objects. If using \code{\link[RSiena]{sienaFit}}, the \code{SAOM_data} argument will also need to be specified as an ordered list with elements corresponding to entries in the list of \code{\link[RSiena]{sienaFit}} objects. Similarly, the \code{SAOM_var} parameter will need to be specified as a list of lists, where each entry in the list is, itself, a list containing all \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}} objects used to calculate macro statistics of interest. Note that \code{SAOM_var} should not be provided if the macro statistic of interest is not a function of the variables contained in \code{\link[RSiena]{varCovar}} and \code{\link[RSiena]{varDyadCovar}}.
 
@@ -110,9 +114,13 @@ If \code{full_output=TRUE}, then a list is returned with the following three ele
 
 \references{
 Duxbury, Scott W. 2024. "Micro-macro Mediation Analysis in Social Networks." Sociological Methodology.
+
+Duxbury, Scott W., and Xin Zhao. Working paper. "Sensitivity Tests for Micro-Macro Network Analysis."
 }
 \author{
 Duxbury, Scott W. Associate Professor, University of North Carolina--Chapel Hill, Department of Sociology.
+
+Zhao, Xin (Louis), PhD Student, University of North Carolina--Chapel Hill, Department of Sociology
 }
 
 \seealso{

@@ -29,7 +29,8 @@ MEMS_rem<- function(model,
                      mediator=mediator,
                      link_id=link_id,
                      controls=controls,
-                     control_functions=control_functions) {
+                     control_functions=control_functions,
+                    sensitivity_ev=sensitivity_ev) {
 
 message("Global and node-level statistics that are a function of *exogenous* node-level and edge-level characteristics are not intrinsically available for rem.dyad type objects. If the macro statistic of interest is a function of node or edge-level exogenous characteristics, adjust macro_function to assign exogenous node and edge attributes before computing macro statistic of interest. See help file for examples.")
 
@@ -49,14 +50,15 @@ message("Global and node-level statistics that are a function of *exogenous* nod
                             mediator=mediator,
                             link_id=link_id,
                             controls=controls,
-                            control_functions=control_functions)
+                            control_functions=control_functions,
+                            sensitivity_ev=sensitivity_ev)
 
   }else{
 
    stop("Nonparametric estimation using rem.dyad object is not currently implemented due to computational demands. To use nonparametric estimation with REM, try respecifying the model as a GLM.")
 
-
+  }
   return(results)
 
-  }
+
 }

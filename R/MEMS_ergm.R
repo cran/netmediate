@@ -25,9 +25,13 @@ MEMS_ergm<- function(model,
                             mediator=mediator,
                             link_id=link_id,
                             controls=controls,
-                            control_functions=control_functions) {
+                            control_functions=control_functions,
+                            sensitivity_ev=sensitivity_ev) {
 
 
+      if(class(model)[1]%in%c("tergm_CMLE","tergm")&&object_type%in%"igraph"){
+        stop("TERGM estimation currently only works with network objects.")
+      }
 
       if(algorithm=="parametric"){
           if(class(model)[1]=="btergm"){
@@ -44,7 +48,8 @@ MEMS_ergm<- function(model,
                                  mediator=mediator,
                                  link_id=link_id,
                                  controls=controls,
-                                 control_functions=control_functions)
+                                 control_functions=control_functions,
+                                 sensitivity_ev=sensitivity_ev)
 
       }else{
 
@@ -65,7 +70,8 @@ MEMS_ergm<- function(model,
                                  mediator=mediator,
                                  link_id=link_id,
                                  controls=controls,
-                                 control_functions=control_functions)
+                                 control_functions=control_functions,
+                                 sensitivity_ev=sensitivity_ev)
 
       }
 

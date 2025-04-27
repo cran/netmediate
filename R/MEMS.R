@@ -20,7 +20,7 @@
 #'@group_id is an optional vector of group identifiers to use when estimating a glm or glmer on grouped data (i.e., multiple time periods, multiple networks) on a dependent tie variable. When specified, the MEMS command will induce unique networks for each grouping factor. If left unspecified, all groups/time period are pooled. If using glmer, the grouping factor does not have to be provided as part of the model or used as a random effect.
 #'@node numbers is a vector listing the number of nodes in each network when using GLM or GLMER. If estimating MEMS aggregated over all networks, this shoud be the total number of nodes in all networks. Required when using GLM or GLMER, ignored otherwise.
 #'@mediator, macro_function,link_id,controls, and control_functions are optional parameters intended for internal use with the AMME function. They are ignored when specified externally
-
+#'@sensitivity_ev, boolean parameter telling MEMS whehter to return sensitivity tests based on e-values and risk ratios
 MEMS<- function(model,
                      micro_process,
                      macro_function,
@@ -42,7 +42,8 @@ MEMS<- function(model,
                      mediator=NULL,
                      link_id=NULL,
                      controls=NULL,
-                     control_functions=NULL) {
+                     control_functions=NULL,
+                     sensitivity_ev=TRUE) {
 
 ###checking compatability
   if(!algorithm%in%c("parametric","nonparametric")){
@@ -99,7 +100,8 @@ MEMS<- function(model,
                          mediator=mediator,
                          link_id=link_id,
                          controls=controls,
-                         control_functions=control_functions)
+                         control_functions=control_functions,
+                         sensitivity_ev=sensitivity_ev)
 
     }
 
@@ -128,7 +130,8 @@ MEMS<- function(model,
                          mediator=mediator,
                          link_id=link_id,
                          controls=controls,
-                         control_functions=control_functions)
+                         control_functions=control_functions,
+                         sensitivity_ev=sensitivity_ev)
 
     }
     return(results)
@@ -136,11 +139,11 @@ MEMS<- function(model,
   }else{
 
 
-  if(!class(model)[1]%in%c("btergm","ergm","sienaFit","rem.dyad","glm","lm","glmerMod","lmerMod","netlogit")){
+  if(!class(model)[1]%in%c("btergm","ergm","sienaFit","rem.dyad","tergm_CMLE","tergm","glm","lm","glmerMod","lmerMod","netlogit")){
     stop("Model type currently not supported. Netmediate currently only supports btergm, ergm, sienaFit, rem.dyad, glm, lm, glmerMod, lmerMod, and netlogit type objects.")
   }
 
-  if(class(model)[1]%in%c("btergm","ergm")){
+  if(class(model)[1]%in%c("btergm","ergm","tergm","tergm_CMLE")){
     results<-MEMS_ergm(model=model,
                        micro_process=micro_process,
                        macro_function=macro_function,
@@ -153,7 +156,8 @@ MEMS<- function(model,
                        mediator=mediator,
                        link_id=link_id,
                        controls=controls,
-                       control_functions=control_functions)
+                       control_functions=control_functions,
+                       sensitivity_ev=sensitivity_ev)
   }
 
 
@@ -181,7 +185,8 @@ MEMS<- function(model,
                        mediator=mediator,
                        link_id=link_id,
                        controls=controls,
-                       control_functions=control_functions)
+                       control_functions=control_functions,
+                       sensitivity_ev=sensitivity_ev)
   }
 
 
@@ -201,7 +206,8 @@ MEMS<- function(model,
                       mediator=mediator,
                       link_id=link_id,
                       controls=controls,
-                      control_functions=control_functions)
+                      control_functions=control_functions,
+                      sensitivity_ev=sensitivity_ev)
   }
 
 
@@ -220,7 +226,8 @@ MEMS<- function(model,
                       mediator=mediator,
                       link_id=link_id,
                       controls=controls,
-                      control_functions=control_functions)
+                      control_functions=control_functions,
+                      sensitivity_ev=sensitivity_ev)
   }
 
 
@@ -246,7 +253,8 @@ MEMS<- function(model,
                       mediator=mediator,
                       link_id=link_id,
                       controls=controls,
-                      control_functions=control_functions)
+                      control_functions=control_functions,
+                      sensitivity_ev=sensitivity_ev)
   }
 
 

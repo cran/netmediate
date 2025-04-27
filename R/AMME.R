@@ -24,6 +24,7 @@
 #'@net_logit_y and net_logit_x are the dependent and independent variables specified using network logistic regression with the netlogit function in sna. y must be a binary adjacency matrix and x stack of independent network variables.
 #'@group_id is an optional vector of group identifiers to use when estimating a glm or glmer on grouped data (i.e., multiple time periods, multiple networks) on a dependent tie variable. When specified, the MEMS command will induce unique networks for each grouping factor. If left unspecified, all groups/time period are pooled. If using glmer, the grouping factor does not have to be provided as part of the model or used as a random effect.
 #'@node_numbers is a vector listing the number of nodes in each network when using GLM or GLMER. If estimating MEMS aggregated over all networks, this shoud be the total number of nodes in all networks. Required when using GLM or GLMER, ignored otherwise.
+#'@sensitivity_ev, boolean parameter telling AMME whehter to return sensitivity tests based on e-values and risk ratios
 
 
 AMME<-function(micro_model,
@@ -48,7 +49,8 @@ AMME<-function(micro_model,
                net_logit_y=NULL,
                net_logit_x=NULL,
                group_id=NULL,
-               node_numbers=NULL){
+               node_numbers=NULL,
+               sensitivity_ev=TRUE){
 
 
 
@@ -104,7 +106,8 @@ AMME<-function(micro_model,
                        covar_list=covar_list,
                        edgelist=edgelist,
                        group_id=group_id,
-                       node_numbers=node_numbers)
+                       node_numbers=node_numbers,
+                       sensitivity_ev=sensitivity_ev)
 
   }else{
 
@@ -128,7 +131,8 @@ AMME<-function(micro_model,
                         net_logit_y=net_logit_y,
                         net_logit_x=net_logit_x,
                         group_id=group_id,
-                        node_numbers=node_numbers)
+                        node_numbers=node_numbers,
+                        sensitivity_ev=sensitivity_ev)
 
   }
 

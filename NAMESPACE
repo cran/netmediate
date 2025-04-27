@@ -3,6 +3,7 @@ export(AMME)
 export(identity_function)
 export(Moran_dv)
 export(compare_MEMS)
+export(mediate_MEMS)
 import(MASS,
 	stats,
 	ergm,
@@ -11,4 +12,5 @@ import(MASS,
 	ergMargins,
 	intergraph
 	)
+importFrom(tergm,tergm)
 	

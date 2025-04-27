@@ -46,7 +46,8 @@ AMME_nonparam<-function(micro_model=micro_model,
                      net_logit_y=net_logit_y,
                      net_logit_x=net_logit_x,
                      group_id=group_id,
-                     node_numbers=node_numbers){
+                     node_numbers=node_numbers,
+                     sensitivity_ev=sensitivity_ev){
 
   if(class(macro_model)[1]%in%"plm"){
     stop("PLM objects not supported for nonparametric estimation. Try parametric estimation instead.")
@@ -256,6 +257,7 @@ theta[is.na(theta)]<-0
   M_vals<-length(interval)
   AMME_vec<-vector(length=nsim)# output data
   prop_vec<-vector(length=nsim) #proportion explained data
+  k_mat <- list()  # Store k_vec results for RR computation
   crosswalk<-list() #only used for nested data
   for(i in 1:length(link_id)){
     crosswalk[[i]]<-data.frame(link_id=link_id[[i]])
@@ -317,6 +319,7 @@ theta[is.na(theta)]<-0
       #calculate differences in columns
       change_mat<-as.matrix(k_vec[,-c(1)])
       prop_mat<-change_mat
+      k_mat[[j]] <- k_vec  # Store k_vec for RR calculation
 
       for(k in 1:ncol(change_mat)){
         upper<-k+1
@@ -367,14 +370,70 @@ theta[is.na(theta)]<-0
   summary_dat[2,1]<-mean(prop_vec,na.rm=TRUE)
 
 
+  if(sensitivity_ev==TRUE){
+    nsim <- length(k_mat)
+    RR_vec <- numeric(nsim)
+    n_boot <- 1000
+
+    for (j in 1:nsim) {
+      k_vec <- k_mat[[j]]
+      if (is.null(k_vec)) next
+
+      M_T1 <- mean(k_vec[, 2], na.rm = TRUE)  # E[M | T=1]
+      M_T0 <- mean(k_vec[, 1], na.rm = TRUE)  # E[M | T=0]
+
+      RR_vec[j] <- ifelse(M_T0 > 0, M_T1 / M_T0, NA)
+    }
+
+    RR_M_given_T <- mean(RR_vec, na.rm = TRUE)
+    RR_sd <- sd(RR_vec, na.rm = TRUE)
+    RR_CI <- quantile(RR_vec, c(0.025, 0.975), na.rm = TRUE)
+    N1 <- sum(!is.na(RR_vec))
+
+    boot_samples <- replicate(n_boot, {
+      sample_RR <- sample(RR_vec, N1, replace = TRUE)
+      mean(sample_RR, na.rm = TRUE)
+    })
+    CI_lower_boot <- quantile(boot_samples, 0.025, na.rm = TRUE)
+    CI_upper_boot <- quantile(boot_samples, 0.975, na.rm = TRUE)
+
+    # Compute E-value
+    E_fun<-function(x){
+      if (x < 1) {
+        RR_inv <- 1 / x
+        ev <- RR_inv + sqrt(RR_inv * (RR_inv - 1))
+      } else {
+        ev <- x + sqrt(x * (x - 1))
+      }
+      return(ev)
+    }
+
+    E_value<-E_fun(RR_M_given_T)
+    CI_lower_boot<-E_fun(CI_lower_boot)
+    CI_upper_boot<-E_fun(CI_lower_boot)
+
+
+    message(sprintf("95%% CI (Bootstrap): [%.3f, %.3f]", CI_lower_boot, CI_upper_boot))
+    message(sprintf("E-value: %.3f", E_value))
+
+    # Return results
+    ev_data <- list(
+      RR_M_given_T = RR_M_given_T,
+      CI_bootstrap = c(CI_lower_boot, CI_upper_boot),
+      E_value = E_value
+    )
+
+  }
+
+
   if(full_output==FALSE){
     return(summary_dat)
   }else{
     out_dat<-list(summary_dat=summary_dat,
                   AMME_obs=AMME_vec,
-                  prop_explained_obs=prop_vec)
+                  prop_explained_obs=prop_vec,
+                  ev_data=ev_data)
     return(out_dat)
-
   }
 
 

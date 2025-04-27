@@ -26,7 +26,8 @@ MEMS_QAP <- function(model,
                      mediator=mediator,
                      link_id=link_id,
                      controls=controls,
-                     control_functions=control_functions) {
+                     control_functions=control_functions,
+                     sensitivity_ev=sensitivity_ev) {
 
 
 
@@ -236,12 +237,61 @@ MEMS_QAP <- function(model,
 
   summary_dat[2,1]<-mean(prop_change,na.rm=TRUE)
 
+  ev_data<-NULL
+
+  if(sensitivity_ev==TRUE){
+    M_T1 <- mean(output_data[,2], na.rm=TRUE)  # E[M | T=1]
+    M_T0 <- mean(output_data[,1], na.rm=TRUE)  # E[M | T=0]
+    n_boot <- 1000
+
+    RR_M_given_T <- M_T1 / M_T0
+
+    N1 <- sum(!is.na(output_data[,2]))
+    N0 <- sum(!is.na(output_data[,1]))
+
+    boot_samples <- replicate(n_boot, {
+      sample_T1 <- sample(output_data[,2], N1, replace = TRUE)
+      sample_T0 <- sample(output_data[,1], N0, replace = TRUE)
+      mean(sample_T1, na.rm=TRUE) / mean(sample_T0, na.rm=TRUE)
+    })
+    CI_lower_boot <- quantile(boot_samples, 0.025, na.rm=TRUE)
+    CI_upper_boot <- quantile(boot_samples, 0.975, na.rm=TRUE)
+
+    # Compute E-value
+    E_fun<-function(x){
+      if (x < 1) {
+        RR_inv <- 1 / x
+        ev <- RR_inv + sqrt(RR_inv * (RR_inv - 1))
+      } else {
+        ev <- x + sqrt(x * (x - 1))
+      }
+      return(ev)
+    }
+
+    E_value<-E_fun(RR_M_given_T)
+    CI_lower_boot<-E_fun(CI_lower_boot)
+    CI_upper_boot<-E_fun(CI_lower_boot)
+
+
+    message(sprintf("95%% CI (Bootstrap): [%.3f, %.3f]", CI_lower_boot, CI_upper_boot))
+    message(sprintf("E-value: %.3f", E_value))
+
+    ev_data <- (list(
+      RR_M_given_T = RR_M_given_T,
+      CI_bootstrap = c(CI_lower_boot, CI_upper_boot),
+      E_value = E_value
+    ))
+
+  }
+
   if(full_output==FALSE){
     return(summary_dat)
   }else{
     out_dat<-list(summary_dat=summary_dat,
                   output_data=output_data,
-                  mems_samples=diff_data)
+                  mems_samples=diff_data,
+                  ev_data=ev_data)
+
     if(is.null(link_id)){
 
       return(out_dat) #return data no controls
@@ -257,5 +307,6 @@ MEMS_QAP <- function(model,
 
     }
   }
+
 
 }

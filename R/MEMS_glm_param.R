@@ -54,6 +54,10 @@ MEMS_glm_param <- function(model=model,
 
   }
 
+  if(any(!micro_process%in%names(coef))){
+    stop("micro_process not found in list of coefficients. respecify")
+  }
+
   if(any(is.na(cov_mat))|
      any(is.infinite(cov_mat))){
     stop("Infinite or missing values in covariance matrix estimates. Algorithm cannot continue.")

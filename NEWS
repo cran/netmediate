@@ -7,3 +7,4 @@ netmediate v 1.1
 - New compare_MEMS function for testing differences in MEMS estimates within the same model, between two nested models, or between two models with distinct functional forms.
 - New mediate_MEMS function for decomposing direct, indirect, and total MEMS estimates. Includes functionality for testing robustness to researchers' choice of model.
 - Fixed a bug in the calculation of p-values for MEMS estimates in pooled SAOM (lists of sienaFit subjects)
+- Bug handling for SAOM on undirected networks

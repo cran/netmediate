@@ -166,7 +166,7 @@ AMME(micro_model=a,
 
 
 }
-\donttest{
+\dontrun{
 ##############################
 #   Basic AMME specifications
 #############################

@@ -146,7 +146,8 @@ compare_MEMS <- function(partial_model,
 
   if (sensitivity_ev) {
     m_part <- mean(f_MEMS$output_data[,2], na.rm = TRUE)
-    m_full <- mean(p_MEMS$output_data[,2], na.rm = TRUE)
+    full_i<-p_MEMS$output_data[,1]+p_MEMS$output_data[,2]-f_MEMS$output_data[,1]
+    m_full <- mean(full_i, na.rm = TRUE)
     RR_raw <- m_part / m_full
 
     if (is.finite(RR_raw) && RR_raw > 0) {

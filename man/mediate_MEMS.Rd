@@ -153,11 +153,9 @@ mediate_MEMS(partial_model=a,
 
 }
 
-\donttest{
+\dontrun{
 
-##############
-# Not run
-###############
+
 library(statnet)
 library(igraph)
 data("faux.mesa.high")
@@ -396,7 +394,7 @@ mediate_MEMS(partial_model=TLSmodel_notrans,
              model_comparison = TRUE,
              partial_model2=TERGM_1_nogwesp,
              full_model2=TERGM_1,
-             micro_process2="Form~nodematch.smoking",
+             micro_process2="Form(1)~nodematch.smoking",
              macro_function2=Moran_tergm,
              object_type = "network",
              SAOM_data = SAOM.Data,

@@ -132,7 +132,7 @@ MEMS(a,
 
 }
 
-\donttest{
+\dontrun{
 ########################################
 # ERGM examples and basic utilities
 #######################################

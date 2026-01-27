@@ -55,6 +55,10 @@ MEMS_glm_nonparam <- function(model=model,
     coef<-model$coefficients
   }
 
+  if(any(!micro_process%in%names(coef))){
+    stop("micro_process not found in list of coefficients. respecify")
+  }
+
   model_mat<-stats::model.frame(model)
   model_form<-stats::formula(model)
   if(nrow(model_mat)>200000){

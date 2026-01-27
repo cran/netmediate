@@ -50,6 +50,10 @@ MEMS_pooled_saom <- function(model,
        any(is.infinite(cov_mat))){
      stop("Infinite or missing values in covariance matrix estimates. Algorithm cannot continue.")
 
+      if(any(!micro_process%in%model$effects$effectName)){
+        stop("micro_process not found in list of coefficients for at least one of the specified models. respecify")
+      }
+
     }
    interval<-sort(interval) #order from lowest to highest
 

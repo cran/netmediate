@@ -37,6 +37,10 @@ MEMS_ergm_param <- function(model,
 
   }
 
+  if(any(!micro_process%in%names(coef))){
+    stop("micro_process not found in list of coefficients. respecify")
+  }
+
   if(any(is.na(cov_mat))|
      any(is.infinite(cov_mat))){
     stop("Infinite or missing values in covariance matrix estimates. Algorithm cannot continue.")
@@ -49,6 +53,7 @@ MEMS_ergm_param <- function(model,
                        mu=coef,
                        Sigma=cov_mat,
                        empirical = TRUE)
+
 
  # ergm_mat<-ergMargins::edge.prob2(model)
   mat_list<-list()
@@ -98,10 +103,12 @@ MEMS_ergm_param <- function(model,
     net_list<-list()
     for(i in 1:length(mat_list)){
 
+
      # pred_mat<-mat_list[[i]]
     #  start.drops<-ncol(pred_mat)-5
     #  pred_mat<-pred_mat[,-c(1,start.drops:ncol(pred_mat))]
       cbcoef<-theta[j,]
+
       cbcoef[micro_process]<-cbcoef[micro_process]*interval[i]
       if(class(model)[1]%in%c("tergm_CMLE","tergm")){
         net_list[[i]]<-simulate(model,

@@ -34,6 +34,9 @@ MEMS_ergm_nonparam <- function(model,
     offset_mat<-btergm::mtergm(btergm_formula,returndata = TRUE,verbose=FALSE)$offsmat
   }
 
+  if(any(!micro_process%in%names(btergm::coef(model)))){
+    stop("micro_process not found in list of coefficients. respecify")
+  }
 
   interval<-sort(interval) #order from lowest to highest
   ergm_mat<-btergm::edgeprob(model)

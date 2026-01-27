@@ -38,6 +38,10 @@ MEMS_saom <- function(model,
   cov_mat<-model$covtheta
   aMEMS_tracer<-0
 
+  if(any(!micro_process%in%model$effects$effectName)){
+    stop("micro_process not found in list of coefficients. respecify")
+  }
+
   if(any(is.na(coef))|
      any(is.infinite(coef))){
     stop("Infinite or missing values in parameter estimates. Algorithm cannot continue.")
